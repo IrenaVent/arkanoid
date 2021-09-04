@@ -12,4 +12,4 @@ class Raqueta (Sprite):
             self.rect.x -= 5
 
         if pg.key.get_pressed()[pg.K_RIGHT]:
-            self.rect.y += 5
+            self.rect.x += 5

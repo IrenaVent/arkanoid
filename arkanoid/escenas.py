@@ -5,7 +5,7 @@ from .entidades import Raqueta
 class Escena():
     def __init__(self, pantalla):
         self.pantalla = pantalla
-        self.reloj = pg.time.Clock
+        self.reloj = pg.time.Clock()
 
     def bucle_principal(self):
         pass
@@ -44,6 +44,7 @@ class Partida(Escena):
     def bucle_principal(self):
         game_over = False
         while not game_over:
+            self.reloj.tick(FPS)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     exit()
