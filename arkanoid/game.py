@@ -14,9 +14,9 @@ class Game():
     def launch(self):
         i=0
 
-        while True:
+        while True: # buscle infinito
             self.escenas[i].bucle_principal()
             i += 1
             if i == len(self.escenas):
                 i = 0
-            # i = (i + 1) % len(self.escenas) - lo mismo que las 3 líneas anteriores
+            # i = (i + 1) % len(self.escenas) - lo mismo que las 3 líneas anteriores 
