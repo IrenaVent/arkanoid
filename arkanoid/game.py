@@ -1,6 +1,6 @@
 import pygame as pg
 from arkanoid import ALTO, ANCHO
-from arkanoid.escenas import Portada, Partida
+from arkanoid.escenas import Portada, Partida, Records
 
 pg.init()
 
@@ -9,7 +9,7 @@ pg.init()
 class Game():
     def __init__(self):
         pantalla = pg.display.set_mode((ANCHO,ALTO))
-        self.escenas = [Portada(pantalla), Partida(pantalla)] # escenas puede ser screen o cualquier cosa pertenece a la clase game
+        self.escenas = [Portada(pantalla), Partida(pantalla), Records(pantalla)] # escenas puede ser screen o cualquier cosa pertenece a la clase game
 
     def launch(self):
         i=0
