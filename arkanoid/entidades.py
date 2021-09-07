@@ -5,7 +5,9 @@ from . import FPS, ANCHO, ALTO
 class Raqueta (Sprite):
     disfraces = ["electric00.png", "electric01.png", "electric02.png"]
     def __init__(self, **kwargs):
+        super().__init__()
         self.lista_images = []
+
         for nombre in self.disfraces:
             self.lista_images.append(pg.image.load(f"resources/images/{nombre}"))
         self.imagen_activa = 0
@@ -13,8 +15,12 @@ class Raqueta (Sprite):
         self.tiempo_trascurrido = 0
         self.tiempo_hasta_cambio_disfraz = 1000//FPS * 5
 
+        self.posicion_inicial = kwargs
         self.image = self.lista_images[self.imagen_activa]
         self.rect = self.image.get_rect(**kwargs)
+
+    def reset(self):
+        self.rect = self.image.get_rect(**self.posicion_inicial)
 
     def update(self, dt):
         if pg.key.get_pressed()[pg.K_LEFT]:
@@ -44,6 +50,7 @@ class Raqueta (Sprite):
 class Bola (Sprite):
     disfraces = "ball1.png"
     def __init__(self, **kwargs):
+        super().__init__()
         self.image = pg.image.load(f"resources/images/{self.disfraces}")
         self.rect = self.image.get_rect(**kwargs)
         self.delta_x = 5 # movimiento en x
@@ -76,15 +83,31 @@ class Bola (Sprite):
 
 class Ladrillo (Sprite):
     disfraces = "greenTile.png"
-    def __init__(self, x=5, y=5):
+    def __init__(self, x=5, y=5):       
+        super().__init__() #siempre que herede de sprite y lo vamos a meter en un grupo
         # pg.sprite.Sprite.__init__(self)
         self.image = pg.image.load(f"resources/images/{self.disfraces}")
         self.rect = self.image.get_rect(x=x,y=y)
 
-     
-    def __update__(self, *arg):
-        pass
-        # pg.sprite.Sprite.__init__(*arg)
-        # self.lista_ladrillos = self.all_bricks = pg.sprite.Group()
+class Marcador (Sprite):
+    def __init__(self, x, y, fichero_letra, tamanyo, color):
+        super().__init__()
+        self._texto = ""
+        self.x = x
+        self.y = y
+        self.color = color
+        self.fuente = pg.font.Font(f"resources/fonts/{fichero_letra}", tamanyo)
+        self.image = self.fuente.render(self._texto, True, self.color)
+        self.rect = self.image.get_rect(x = self.x, y = self.y)
+    
+    def update(self, dt):
+        self.image = self.fuente.render(self._texto, True, self.color)
+        self.rect = self.image.get_rect(x = self.x, y = self.y)
+    
+    @property
+    def texto(self):
+        return self._texto
 
-  
+    @texto.setter
+    def texto(self, valor):
+        self._texto = str(valor)

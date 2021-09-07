@@ -1,6 +1,6 @@
 import pygame as pg
 from . import FPS, ANCHO, ALTO #el punto indica al módulo al que pertece, en este caso arkanoid
-from .entidades import Raqueta, Bola, Ladrillo
+from .entidades import Raqueta, Bola, Ladrillo, Marcador
 import random
 
 class Escena():
@@ -42,44 +42,61 @@ class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla) #siempre queremos que ejecute el init del padre, no repetimos código
         self.fondo = pg.image.load("resources/images/background.jpg")
-
-        # fuente = pg.font.Font("resources/fonts/CabinSketch-Bold.ttf", 20)
-        # self.score = fuente.render("SCORE: ",True, (255, 255, 255))
-
         self.player = Raqueta(midbottom=(ANCHO // 2, ALTO - 15))
         self.bola = Bola(center=(ANCHO // 2, ALTO // 2))
+        self.cuenta_vidas = Marcador(10, 10, "CabinSketch-Bold.ttf", 24, (240,210,6))
 
-        self.ladrillos = []
+        self.todos = pg.sprite.Group()
+        self.ladrillos = pg.sprite.Group()
+    
+    def reset(self):
+        self.vidas = 3
+        self.puntos = 0
+
+        self.ladrillos.empty()
+        self.todos.empty()
+        
+        self.bola.reset()
+        self.player.reset()
+        
         for f in range (3):
             for c in range(6):
                 ladrillo = Ladrillo(c * 90 + 30, f * 30 + 10)
-                self.ladrillos.append(ladrillo)
+                self.ladrillos.add(ladrillo) 
+        
+        self.todos.add(self.ladrillos, self.player, self.bola, self.cuenta_vidas)
+
 
     def bucle_principal(self):
-        vidas = 3
-        while vidas > 0:
+        self.reset()
+
+        while self.vidas > 0:
             dt = self.reloj.tick(FPS)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     exit()
         
-            self.player.update(dt)
-            self.bola.update(dt)
+            self.cuenta_vidas.texto = self.vidas
+            self.todos.update(dt)
+
             self.bola.comprobar_choque(self.player)
 
+            tocados = pg.sprite.spritecollide(self.bola, self.ladrillos,True) # devuelve una lisata en casa vuelta/f
+            
+            # rebotar pelota tras choque 
+            if len(tocados) > 0:  
+                self.bola.delta_y *= -1
+                self.puntos *= len(tocados) * 5
+
             if not self.bola.viva:
-                vidas -= 1
+                self.vidas -= 1
                 self.bola.viva = True
+                self.player.reset()
               
             self.pantalla.blit(self.fondo, (0,0))
-            self.pantalla.blit(self.player.image, self.player.rect)
-            
-            for ladrillo in self.ladrillos:
-                self.pantalla.blit(ladrillo.image, ladrillo.rect)
-
-            self.pantalla.blit(self.bola.image, self.bola.rect)
+            self.todos.draw(self.pantalla)
 
             pg.display.flip()
-            
+
 class Records(Escena):
     pass 
