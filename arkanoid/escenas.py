@@ -1,6 +1,6 @@
 import pygame as pg
 from . import FPS, ANCHO, ALTO #el punto indica al módulo al que pertece, en este caso arkanoid
-from .entidades import Raqueta, Bola, Ladrillos
+from .entidades import Raqueta, Bola, Ladrillo
 import random
 
 class Escena():
@@ -48,7 +48,12 @@ class Partida(Escena):
 
         self.player = Raqueta(midbottom=(ANCHO // 2, ALTO - 15))
         self.bola = Bola(center=(ANCHO // 2, ALTO // 2))
-       
+
+        self.ladrillos = []
+        for f in range (3):
+            for c in range(6):
+                ladrillo = Ladrillo(c * 90 + 30, f * 30 + 10)
+                self.ladrillos.append(ladrillo)
 
     def bucle_principal(self):
         vidas = 3
@@ -68,10 +73,13 @@ class Partida(Escena):
               
             self.pantalla.blit(self.fondo, (0,0))
             self.pantalla.blit(self.player.image, self.player.rect)
+            
+            for ladrillo in self.ladrillos:
+                self.pantalla.blit(ladrillo.image, ladrillo.rect)
+
             self.pantalla.blit(self.bola.image, self.bola.rect)
 
             pg.display.flip()
-
-
+            
 class Records(Escena):
     pass 

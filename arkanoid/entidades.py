@@ -41,14 +41,13 @@ class Raqueta (Sprite):
         
         self.image = self.lista_images[self.imagen_activa]
 
-
 class Bola (Sprite):
     disfraces = "ball1.png"
     def __init__(self, **kwargs):
         self.image = pg.image.load(f"resources/images/{self.disfraces}")
         self.rect = self.image.get_rect(**kwargs)
-        self.delta_x = 5
-        self.delta_y = 5
+        self.delta_x = 5 # movimiento en x
+        self.delta_y = 5 # movimiento en y
         self.viva = True
         self.posicion_inicial = kwargs # alamcenamos la posición 
         
@@ -63,22 +62,29 @@ class Bola (Sprite):
 
         if self.rect.bottom >= ALTO:
             self.viva = False
-            self.rect = self.image.get_rect(**self.posicion_inicial)
+            self.reset()
     
+    def reset(self): # cuando la bola muere/se pierde vida, resetear su posicion
+        self.rect = self.image.get_rect(**self.posicion_inicial)
+        self.delta_x = 5
+        self.delta_y = 5
+
     def comprobar_choque(self,raqueta):
         if self.rect.right >= raqueta.rect.left and self.rect.left <= raqueta.rect.right and \
             self.rect.bottom >= raqueta.rect.top and self.rect.top <= raqueta.rect.bottom:
-            self.delta_y *= -1
+            self.delta_y *= -1   
 
-class Ladrillos (Sprite):
+class Ladrillo (Sprite):
     disfraces = "greenTile.png"
-    def __init__(self, **kwargs):
-        pg.sprite.Sprite.__init__(self)
+    def __init__(self, x=5, y=5):
+        # pg.sprite.Sprite.__init__(self)
         self.image = pg.image.load(f"resources/images/{self.disfraces}")
-        self.rect = self.image.get_rect(**kwargs)
+        self.rect = self.image.get_rect(x=x,y=y)
 
      
     def __update__(self, *arg):
-        pg.sprite.Sprite.__init__(*arg)
-        self.lista_ladrillos = self.all_bricks = pg.sprite.Group()
+        pass
+        # pg.sprite.Sprite.__init__(*arg)
+        # self.lista_ladrillos = self.all_bricks = pg.sprite.Group()
 
+  
